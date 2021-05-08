@@ -303,10 +303,13 @@ public class TK4Frame extends javax.swing.JFrame {
                 + "'" + penerbit + "')";
         
             statement.executeUpdate(query);
+            
+            JOptionPane.showMessageDialog(null, "Data buku berhasil dibuat!");
+            
             getData();
-        
         } catch (SQLException ex) {
             Logger.getLogger(TK4Frame.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
         }
         
                 
@@ -331,7 +334,27 @@ public class TK4Frame extends javax.swing.JFrame {
     }//GEN-LAST:event_button_clearActionPerformed
 
     private void button_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_hapusActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            int columnNoBuku = 0;
+            int row = tabel_buku.getSelectedRow();
+            String no_buku = tabel_buku.getModel().getValueAt(row, columnNoBuku).toString();
+            int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini?");
+            switch (confirm){
+                case JOptionPane.YES_OPTION:
+                Statement statement = KoneksiDB.getKoneksi().createStatement();
+                String query = "delete from db_perpus.tb_buku "
+                        + "where no_buku = "+no_buku;
+                statement.executeUpdate(query);
+                JOptionPane.showMessageDialog(null, "Data buku berhasil dihapus!");
+                break;              
+            }
+            
+            getData();
+        } catch (SQLException ex) {
+            Logger.getLogger(TK4Frame.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
+        }
     }//GEN-LAST:event_button_hapusActionPerformed
 
     private void button_keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_keluarActionPerformed
