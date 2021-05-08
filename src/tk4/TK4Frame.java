@@ -318,10 +318,46 @@ public class TK4Frame extends javax.swing.JFrame {
 
     private void button_bacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_bacaActionPerformed
         // TODO add your handling code here:
+        int row = tabel_buku.getSelectedRow();
+        String no_buku = tabel_buku.getModel().getValueAt(row, 0).toString();
+        String judul = tabel_buku.getModel().getValueAt(row, 1).toString();
+        String pengarang = tabel_buku.getModel().getValueAt(row, 2).toString();
+        String tahun = tabel_buku.getModel().getValueAt(row, 3).toString();
+        String penerbit = tabel_buku.getModel().getValueAt(row, 4).toString();
+            
+        field_no_buku.setText(no_buku);
+        field_judul_buku.setText(judul);
+        field_pengarang.setText(pengarang);
+        field_tahun.setText(tahun);
+        field_penerbit.setText(penerbit);
     }//GEN-LAST:event_button_bacaActionPerformed
 
     private void button_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_editActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here: 
+            Statement statement = KoneksiDB.getKoneksi().createStatement();
+            int no_buku = Integer.valueOf(field_no_buku.getText());
+            String judul_buku = field_judul_buku.getText();
+            String pengarang = field_pengarang.getText();
+            String tahun = field_tahun.getText();
+            String penerbit = field_penerbit.getText();
+            
+            String query = "update db_perpus.tb_buku "
+                    + "set no_buku="+no_buku+","
+                    + "judul_buku='"+judul_buku+"',"
+                    + "pengarang='"+pengarang+"',"
+                    + "tahun='"+tahun+"',"
+                    + "penerbit='"+penerbit+"' "
+                    + "where no_buku = "+no_buku;
+            statement.executeUpdate(query);
+            
+            JOptionPane.showMessageDialog(null, "Data berhasil diedit!");
+            
+            getData();
+        } catch (SQLException ex) {
+            Logger.getLogger(TK4Frame.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
+        }
     }//GEN-LAST:event_button_editActionPerformed
 
     private void button_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_clearActionPerformed
