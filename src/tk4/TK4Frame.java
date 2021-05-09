@@ -6,6 +6,7 @@
 package tk4;
 
 
+import com.mysql.jdbc.StringUtils;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,6 +79,11 @@ public class TK4Frame extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tabel_buku.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabel_bukuMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tabel_buku);
@@ -311,25 +317,40 @@ public class TK4Frame extends javax.swing.JFrame {
             Logger.getLogger(TK4Frame.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, ex);
         }
-        
-                
-        
     }//GEN-LAST:event_button_simpanActionPerformed
 
     private void button_bacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_bacaActionPerformed
-        // TODO add your handling code here:
-        int row = tabel_buku.getSelectedRow();
-        String no_buku = tabel_buku.getModel().getValueAt(row, 0).toString();
-        String judul = tabel_buku.getModel().getValueAt(row, 1).toString();
-        String pengarang = tabel_buku.getModel().getValueAt(row, 2).toString();
-        String tahun = tabel_buku.getModel().getValueAt(row, 3).toString();
-        String penerbit = tabel_buku.getModel().getValueAt(row, 4).toString();
+        try {
+            // TODO add your handling code here:
+            Statement statement = KoneksiDB.getKoneksi().createStatement();
+            String query = "select * from db_perpus.tb_buku "
+                        + "where no_buku like '%"+field_no_buku.getText().toString()+"%' "
+                        + "and judul_buku like '%"+field_judul_buku.getText().toString()+"%' "
+                        + "and pengarang like '%"+field_pengarang.getText().toString()+"%' "
+                        + "and pengarang like '%"+field_pengarang.getText().toString()+"%' "
+                        + "and penerbit like '%"+field_penerbit.getText().toString()+"%'";
             
-        field_no_buku.setText(no_buku);
-        field_judul_buku.setText(judul);
-        field_pengarang.setText(pengarang);
-        field_tahun.setText(tahun);
-        field_penerbit.setText(penerbit);
+            ResultSet rs = statement.executeQuery(query);
+            
+            DefaultTableModel dtm = (DefaultTableModel) tabel_buku.getModel();
+            dtm.setRowCount(0);
+            Object[] data = new Object[5];
+            int i=1;
+            
+            while(rs.next()){
+                data[0] = Integer.valueOf(rs.getString("no_buku"));
+                data[1] = rs.getString("judul_buku");
+                data[2] = rs.getString("pengarang");
+                data[3] = rs.getString("tahun");
+                data[4] = rs.getString("penerbit");
+                
+                dtm.addRow(data);
+                i++;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(TK4Frame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_button_bacaActionPerformed
 
     private void button_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_editActionPerformed
@@ -397,6 +418,22 @@ public class TK4Frame extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_button_keluarActionPerformed
+
+    private void tabel_bukuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabel_bukuMouseClicked
+        // TODO add your handling code here:
+        int row = tabel_buku.getSelectedRow();
+        String no_buku = tabel_buku.getModel().getValueAt(row, 0).toString();
+        String judul = tabel_buku.getModel().getValueAt(row, 1).toString();
+        String pengarang = tabel_buku.getModel().getValueAt(row, 2).toString();
+        String tahun = tabel_buku.getModel().getValueAt(row, 3).toString();
+        String penerbit = tabel_buku.getModel().getValueAt(row, 4).toString();
+            
+        field_no_buku.setText(no_buku);
+        field_judul_buku.setText(judul);
+        field_pengarang.setText(pengarang);
+        field_tahun.setText(tahun);
+        field_penerbit.setText(penerbit);
+    }//GEN-LAST:event_tabel_bukuMouseClicked
 
     /**
      * @param args the command line arguments
